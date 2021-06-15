@@ -1,97 +1,46 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
-
-function App() {
-    // d - List of items that can be updated with new additional items when the button is pressed
-    var [d, set] = React.useState()
-
-    var fill = () => {
-        // The function fills the list for render with some items
-
-        [...Array(20)].forEach((_, index) => {
-            if (!Array.isArray(d)) {
-                // @ts-ignore
-                d = []
-            }
-
-            // @ts-ignore
-            d.push({
-                id: index, title: (function () {
-                    var result = [];
-                    for (var i = 0; i < 10; i++) {
-                        result.push('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() *
-                            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.length)));
-                    }
-                    var string = result.join('');
-                    return string
-                })()
-            })
-        })
-        set(d)
-    }
-
-    // Fills the List onmount
-    fill()
-
-    var render = () => {
-        // renders the list of items as components
-
-        if (!Array.isArray(d)) {
-            // @ts-ignore
-            d = []
+ 
+import {Header} from './Header'
+import {AppItem} from './AppItem'
+import {AddItemsArea} from './AddItemsArea'
+import {ItemsArea} from './ItemsArea'
+import {HashString,ItemType} from './types'
+ 
+ 
+const App = ():JSX.Element =>{
+    const defaultHashLength = 10;
+    const defaultCountItems = 20; 
+    // items - List of items that can be updated with new additional items when the button is pressed
+    const [items, setItems] = React.useState<ItemType[]>([]); 
+    React.useEffect(()=>{
+        fillItems(); // Fills the List onmount
+    },[])    
+    const generateHash = (hashLength = defaultHashLength):HashString=>{
+        var result = '';
+        const hashSymbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const hashSymbolsLen = hashSymbols.length;
+        for (let i = 0; i < hashLength; i++) {
+            result += hashSymbols.charAt(Math.floor(Math.random() * hashSymbolsLen));
         }
-        var result:any = []
-        // @ts-ignore
-        d.forEach(function (i, index) {
-            result.push(<div className={'App-item'}>{'Title is:' + i.title + '!'}</div>)
-        })
-        return result
+        return result;
     }
-
-    return (
+    const fillItems = ():void=>{ 
+        const newItems = [...Array(defaultCountItems)].map((_,id)=>({
+            id,title:generateHash()
+        }));
+        setItems(items.length>0? [...items,...newItems]:newItems);
+    }  
+    const appItems = items.map(el=><AppItem title={el.title}/>);
+    
+    return(
         <div className="App">
-            <div className="App-header">
-                <img src={logo} className="App-logo" alt="logo"/>
-            </div>
-            <div>
-                <button className={"App-button"} onClick={() => {
-                    // The Function adds new items to the existing list
-
-                    if (!Array.isArray(d)) {
-                        // @ts-ignore
-                        d = []
-                    }
-                    [...Array(20)].forEach((_, index) => {
-                        if (!Array.isArray(d)) {
-                            // @ts-ignore
-                            d = []
-                        }
-                        // @ts-ignore
-                        d.push({
-                            id: index, title: (function () {
-                                var result = [];
-                                for (var i = 0; i < 10; i++) {
-                                    result.push('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() *
-                                        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.length)));
-                                }
-                                var string = result.join('');
-                                return string
-                            })()
-                        })
-                    })
-                    // @ts-ignore
-                    set(d)
-                }}>
-                    Add More
-                </button>
-            </div>
-            <div>
-                {render()}
-            </div>
+            <Header logo={logo} alt={'App logo'}/>
+            <AddItemsArea onAdd={fillItems}/>
+            <ItemsArea> {appItems} </ItemsArea>
         </div>
-    );
+    )
 }
-
+ 
 export default App;
