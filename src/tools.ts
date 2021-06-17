@@ -1,6 +1,6 @@
 
 import {HashString} from './types'
- const defaultHashLength = 10;
+export const defaultHashLength = 10;
  const defaultCountItems = 20; 
 
 export const generateHash = (hashLength = defaultHashLength):HashString=>{
