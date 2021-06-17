@@ -1,3 +1,3 @@
 import {ItemsAreaProps} from './types'
 
-export const ItemsArea = ({children}:ItemsAreaProps):JSX.Element=>(<div> {children} </div>);
+export const ItemsArea:React.FC<ItemsAreaProps> = ({children})=>(<div> {children} </div>);
